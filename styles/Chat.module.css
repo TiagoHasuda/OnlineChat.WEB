@@ -1,0 +1,160 @@
+.chatContainer {
+  display: flex;
+  height: 100vh;
+}
+
+.chatsContainer {
+  display: flex;
+  flex: 1;
+  border: 1px solid #ccc;
+  flex-direction: column;
+}
+
+.newChatBtn {
+  cursor: pointer;
+  margin-top: -2px;
+}
+
+.messagesContainer {
+  display: flex;
+  flex: 2;
+  border: 1px solid #ccc;
+  flex-direction: column;
+}
+
+.chatsTitle {
+  display: flex;
+  font-size: 25px;
+  background-color: #32a852;
+  color: white;
+  padding: 10px 20px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.messagesTitle {
+  font-size: 25px;
+  background-color: #fff9c9;
+  padding: 10px 20px;
+}
+
+.chatsList {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.noChatLabel {
+  font-size: 20px;
+  color: #ccc;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.listItem {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  margin-top: -1px;
+}
+
+.selectedItem {
+  background-color: #79b4f2;
+}
+
+.chatName {
+  display: -webkit-box;
+  font-size: 15px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.chatLastMessage {
+  display: -webkit-box;
+  font-size: 15px;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.backdrop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #00000080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newChatContainer {
+  padding: 20px 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.textInput {
+  padding: 10px 5px;
+  border-radius: 5px;
+  border-width: 1px;
+  margin-top: 5px;
+  display: block;
+}
+
+.label {
+  margin-bottom: 5px;
+}
+
+.sendNewMessageButton {
+  display: block;
+  outline: none;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  margin: auto;
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.historyContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.history {
+  flex: 1;
+  padding: 10px 10px;
+}
+
+.messageSent {
+  background-color: #8aeda9;
+  width: fit-content;
+  max-width: 70%;
+  margin-left: auto;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.messageReceived {
+  background-color: #8aeda9;
+  width: fit-content;
+  max-width: 70%;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.messageInput {
+  width: 100%;
+  font-size: 20px;
+  padding: 10px;
+}
