@@ -1,7 +1,7 @@
 import { io, Socket as IoSocket } from 'socket.io-client'
 
 export default class Socket {
-    private static socket: IoSocket = io('ws://localhost:3000', {
+    private static socket: IoSocket = io('ws://james-chat-api.herokuapp.com', {
         reconnection: false,
         transports: ['websocket'],
     })
