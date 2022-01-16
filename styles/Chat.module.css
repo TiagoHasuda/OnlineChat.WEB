@@ -1,6 +1,6 @@
 .chatContainer {
   display: flex;
-  height: 100vh;
+  flex: 1;
 }
 
 .chatsContainer {
@@ -127,13 +127,17 @@
 
 .historyContainer {
   display: flex;
-  flex: 1;
+  height: 100%;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .history {
   flex: 1;
   padding: 10px 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .messageSent {
@@ -157,4 +161,11 @@
   width: 100%;
   font-size: 20px;
   padding: 10px;
+}
+
+.typing {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-weight: bold;
 }

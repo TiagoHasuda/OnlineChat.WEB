@@ -9,6 +9,12 @@ import styles from '../styles/Chat.module.css'
 
 const Chat: NextPage = () => {
     const router = useRouter()
+    const [userTyping, _setUserTyping] = useState(0)
+    const userTypingRef = useRef(userTyping)
+    const setUserTyping = (data: number) => {
+        userTypingRef.current = data
+        _setUserTyping(data)
+    }
     const [chats, _setChats] = useState<(User & { lastMessage: string })[]>([])
     const chatsRef = useRef(chats)
     const setChats = (data: (User & { lastMessage: string })[]) => {
@@ -36,6 +42,7 @@ const Chat: NextPage = () => {
         _setHistory(data)
     }
     const [chatMessage, setChatMessage] = useState('')
+    let scrollRef = useRef<HTMLDivElement | null>(null)
 
     const newMessage = (data: Message) => {
         setShowNewChat(false)
@@ -58,11 +65,14 @@ const Chat: NextPage = () => {
                     name: chat.name,
                     publicKey: chat.publicKey,
                 }))
-                if (selectedChatRef.current?.name === chat.name)
+                if (selectedChatRef.current?.name === chat.name) {
                     setHistory([
                         ...historyRef.current,
                         data,
                     ])
+                    if (scrollRef.current)
+                        scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+                }
             }
         } else if (!!data.fromPublicKey && !!Socket.privateKey) {
             const newFromPublicKey = new Uint8Array(data.fromPublicKey)
@@ -83,11 +93,15 @@ const Chat: NextPage = () => {
                     name: chat.name,
                     publicKey: chat.publicKey,
                 }))
-                if (selectedChatRef.current?.name === chat.name)
+                if (selectedChatRef.current?.name === chat.name) {
                     setHistory([
                         ...historyRef.current,
                         data,
                     ])
+                    setUserTyping(0)
+                    if (scrollRef.current)
+                        scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+                }
             }
         }
     }
@@ -112,6 +126,18 @@ const Chat: NextPage = () => {
             setHistory(data)
     }
 
+    const typingTimeout = () => {
+        if (userTypingRef.current < new Date().getTime() - 3000)
+            setUserTyping(0)
+    }
+
+    const typing = (data: { from: string, to: string }) => {
+        if (Socket.nickname === data.to) {
+            setUserTyping(new Date().getTime())
+            setTimeout(typingTimeout, 3000)
+        }
+    }
+
     useEffect(() => {
         if (Socket.privateKey === undefined)
             router.push('/')
@@ -119,12 +145,14 @@ const Chat: NextPage = () => {
         Socket.on('getUserResponse', getUserResponse)
         Socket.on('sendMessageResponse', sendMessageResponse)
         Socket.on('getHistoryResponse', getHistoryResponse)
+        Socket.on('typing', typing)
 
         return () => {
             Socket.off('newMessage', newMessage)
             Socket.off('getUserResponse', getUserResponse)
             Socket.off('sendMessageResponse', sendMessageResponse)
             Socket.off('getHistoryResponse', getHistoryResponse)
+            Socket.off('typing', typing)
         }
     }, [])
 
@@ -160,8 +188,14 @@ const Chat: NextPage = () => {
     const submitMessage = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!selectedChat) return
-        sendMessage(selectedChat.name, selectedChat.publicKey, chatMessage)
+        sendMessage(selectedChat.name, selectedChat.publicKey, chatMessage.trim())
         setChatMessage('')
+    }
+
+    const changeMessage = (value: string) => {
+        setChatMessage(value)
+        if (!!selectedChat)
+            Socket.emit('sendTyping', { from: Socket.nickname, to: selectedChat.name })
     }
 
     return <div className={styles.chatContainer}>
@@ -182,7 +216,7 @@ const Chat: NextPage = () => {
         <div className={styles.messagesContainer}>
             <a className={styles.messagesTitle}>Messages</a>
             <div className={styles.historyContainer}>
-                <div className={styles.history}>
+                <div className={styles.history} ref={ref => scrollRef.current = ref}>
                     {history.map((item, index) => <div key={index} className={item.from === Socket.nickname ? styles.messageSent : styles.messageReceived}>
                         <a>{EncryptionService.decodeMessage(
                             new Uint8Array(item.message),
@@ -191,14 +225,15 @@ const Chat: NextPage = () => {
                             Socket.privateKey
                         )}</a>
                     </div>)}
+                    {(userTyping !== 0) && <div className={styles.typing}>Typing...</div>}
                 </div>
                 <form onSubmit={submitMessage}>
                     <input
                         type='text'
                         className={styles.messageInput}
-                        maxLength={5000}
+                        maxLength={10000}
                         value={chatMessage}
-                        onChange={(e) => setChatMessage(e.target.value)}
+                        onChange={(e) => changeMessage(e.target.value)}
                     />
                 </form>
             </div>

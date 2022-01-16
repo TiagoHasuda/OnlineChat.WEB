@@ -1,5 +1,5 @@
 import { io, Socket as IoSocket } from 'socket.io-client'
-
+//james-chat-api.herokuapp.com
 export default class Socket {
     private static socket: IoSocket = io('ws://james-chat-api.herokuapp.com', {
         reconnection: false,

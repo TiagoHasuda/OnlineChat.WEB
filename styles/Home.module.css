@@ -1,6 +1,6 @@
 .homeContainer {
   display: flex;
-  height: 100vh;
+  flex: 1;
 }
 
 .formContainer {
