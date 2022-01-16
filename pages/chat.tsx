@@ -52,19 +52,19 @@ const Chat: NextPage = () => {
             const chat = chatsRef.current.find(chat => chat.name === data.to)
             if (!chat)
                 setChats([
-                    ...chatsRef.current,
                     {
                         name: data.to,
                         lastMessage: transcriptedMessage,
                         publicKey: newToPublicKey,
-                    }
+                    },
+                    ...chatsRef.current,
                 ])
             else {
-                setChats(chatsRef.current.map(chat => chat.name !== data.to ? chat : {
-                    lastMessage: transcriptedMessage,
-                    name: chat.name,
-                    publicKey: chat.publicKey,
-                }))
+                chat.lastMessage = transcriptedMessage
+                setChats([
+                    chat,
+                    ...chatsRef.current.filter(chat => chat.name !== data.to),
+                ])
                 if (selectedChatRef.current?.name === chat.name) {
                     setHistory([
                         ...historyRef.current,
@@ -80,19 +80,19 @@ const Chat: NextPage = () => {
             const chat = chatsRef.current.find(chat => chat.name === data.from)
             if (!chat)
                 setChats([
-                    ...chatsRef.current,
                     {
                         name: data.from,
                         lastMessage: transcriptedMessage,
                         publicKey: newFromPublicKey,
-                    }
+                    },
+                    ...chatsRef.current,
                 ])
             else {
-                setChats(chatsRef.current.map(chat => chat.name !== data.from ? chat : {
-                    lastMessage: transcriptedMessage,
-                    name: chat.name,
-                    publicKey: chat.publicKey,
-                }))
+                chat.lastMessage = transcriptedMessage
+                setChats([
+                    chat,
+                    ...chatsRef.current.filter(chat => chat.name !== data.from),
+                ])
                 if (selectedChatRef.current?.name === chat.name) {
                     setHistory([
                         ...historyRef.current,
